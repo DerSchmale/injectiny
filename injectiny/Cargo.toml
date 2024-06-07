@@ -1,0 +1,13 @@
+[package]
+name = "injectiny"
+version = "0.1.1"
+authors = ["David Lenaerts <david.lenaerts@gmail.com>"]
+license = "MIT"
+description = "A tiny dependency injection utility for Rust"
+edition = "2021"
+keywords = ["dependency", "injection", "di", "ioc"]
+repository = "https://github.com/DerSchmale/injectiny"
+readme = "../README.md"
+
+[dependencies]
+injectiny_proc_macro = "0.1.1"
