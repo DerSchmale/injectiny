@@ -89,8 +89,6 @@ fn parse_injected_fields(ast: &mut DeriveInput) -> Vec<(&Field, Attribute)> {
 
 #[proc_macro_attribute]
 pub fn injectable(attr: TokenStream, input: TokenStream) -> TokenStream {
-    // TODO: Rewrite this to support #[inject(Enum::Field)] instead
-
     let enum_val = parse_macro_input!(attr as Path);
     let mut ast = parse_macro_input!(input as DeriveInput);
     let fields: Vec<_> = parse_injected_fields(&mut ast);
