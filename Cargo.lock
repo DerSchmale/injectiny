@@ -4,14 +4,25 @@ version = 3
 
 [[package]]
 name = "injectiny"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "injectiny_proc_macro",
+ "injectiny_proc_macro 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "injectiny_proc_macro"
 version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "injectiny_proc_macro"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a31c463ec59cc31810a8d71ec44334b351e5fe2ddc1364425ec0db3bf1e58f62"
 dependencies = [
  "proc-macro2",
  "quote",
