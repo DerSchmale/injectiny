@@ -66,15 +66,29 @@ pub trait Injectable<T: Clone> {
     fn inject(&mut self, value: T);
 }
 
+///
+/// Injected is a wrapper around a value that can be injected into a struct. All injected members
+/// must be wrapped by this type.
+///
 pub struct Injected<T> {
     value: Option<T>
 }
 
 impl<T> Injected<T> {
+    ///
+    /// Creates a new Injected instance with the given value.
+    ///
     pub fn from(value: T) -> Self {
         Self {
             value: Some(value)
         }
+    }
+
+    ///
+    /// Returns true if the value has been injected.
+    ///
+    pub fn is_injected(&self) -> bool {
+        self.value.is_some()
     }
 }
 
