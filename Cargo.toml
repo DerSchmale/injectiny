@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "injectiny",
+    "injectiny_proc_macro"
+]
+resolver = "2"
