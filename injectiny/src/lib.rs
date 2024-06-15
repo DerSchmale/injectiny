@@ -50,7 +50,7 @@
 //!
 //! // This could be one of many views
 //! let mut injectee: Injectee = Default::default();
-//! injectee.inject(Model::Name(name));
+//! injectee.inject(Model::Name(Rc::clone(&name)));
 //! injectee.inject(Model::Age(age));
 //!
 //! // The injected fields can be accessed like normal references

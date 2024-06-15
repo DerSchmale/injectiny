@@ -108,7 +108,7 @@ pub fn injectable(attr: TokenStream, input: TokenStream) -> TokenStream {
 
         matches = quote! {
             #matches
-            #member(value) => self.#field_name = Injected::from(value),
+            #member(value) => self.#field_name = injectiny::Injected::from(value),
         };
     }
 
