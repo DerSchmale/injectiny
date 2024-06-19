@@ -13,19 +13,24 @@ cargo add injectiny
 cargo add injectiny_proc_macro
 ```
 
-## Example
+# Example: Injection using Injector
+
+For larger projects, the manual approach can become cumbersome. The `Injector` struct can be used
+to make injecting dependencies more ergonomic.
 
 ```
 use std::cell::RefCell;
 use std::rc::Rc;
-use injectiny::{Injected, Injectable};
+use std::sync::{Arc, Mutex};
+use injectiny::{Injected, Injectable, Injector};
 use injectiny_proc_macro::injectable;
 
 // Model is an enum defining all the fields that can be injected
 #[derive(Clone)]
 enum Model {
    Name(Rc<RefCell<String>>),   // non-clonable objects should be wrapped in Rc<RefCell<T>>
-   Age(u32)
+   Age(u32),
+   Other(Rc<RefCell<Injectee>>)
 }
 
 // The #[injectable] attribute macro generates an implementation of the Injectable trait for
@@ -43,16 +48,39 @@ struct Injectee
     age: Injected<u32>
 }
 
+#[injectable(Model)]
+#[derive(Default)]
+struct OtherInjectee
+{
+    // we can also inject other injected models
+    #[inject(Model::Other)]
+    other: Injected<Rc<RefCell<Injectee>>>,
+}
+
 // This would represent a model
 let name = Rc::new(RefCell::new("Patje".to_string()));
 let age = 25;
 
-// This could be one of many views
-let mut injectee: Injectee = Default::default();
-injectee.inject(Model::Name(name));
-injectee.inject(Model::Age(age));
+// we're going to inject injectee2, so wrap it in an Rc<Refcell<>>, or an Arc<Mutex/RwLock>
+let mut injectee1: Rc<RefCell<Injectee>> = Default::default();
+let mut injectee2: OtherInjectee = Default::default();
+
+// the order of inject and to calls does not matter
+let injector = Injector::new()
+    // inject sources. These need to be functions because usually, we're cloning a smart pointer or something
+    .inject(&|| Model::Name(Rc::clone(&name)))
+    .inject(&|| Model::Age(age))
+    .inject(&|| Model::Other(Rc::clone(&injectee1)))
+    // inject targets
+    // behind a RefCell, need to convert to ref
+    .to(&mut *injectee1.borrow_mut())
+    .to(&mut injectee2);
 
 // The injected fields can be accessed like normal references
-assert_eq!(&*injectee.name.borrow(), "Patje");
-assert_eq!(*injectee.age, 25);
-```
+assert_eq!(&*injectee1.borrow().name.borrow(), "Patje");
+assert_eq!(*injectee1.borrow().age, 25);
+
+// making sure the injected Injectee is the same
+let injected = injectee2.other.borrow();
+assert_eq!(&*injected.name.borrow(), "Patje");
+assert_eq!(*injected.age, 25);
